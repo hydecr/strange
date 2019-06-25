@@ -1,4 +1,4 @@
-require "../formatter/basic_formatter"
+  require "../formatter/basic_formatter"
 
 class Strange
   abstract class Transport

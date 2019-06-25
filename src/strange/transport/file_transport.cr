@@ -12,6 +12,8 @@ class Strange
     end
 
     def log(message : String, level : Strange::Level)
+      return unless level <= @level
+
       formatted = @formatter.format(message, level)
       File.write(@file, formatted, mode: "a+")
     end

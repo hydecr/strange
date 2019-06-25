@@ -1,7 +1,4 @@
-require "./formatter/formatter"
 require "./formatter/basic_formatter"
-
-require "./transport/transport"
 require "./transport/console_transport"
 
 class Strange

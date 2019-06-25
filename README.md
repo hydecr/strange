@@ -1,10 +1,6 @@
 # Strange
 
-Strange is a logger which provides a maximum amount of configuration
-options, with minimal setup. It supports setting the log level
-via an environment variable, colorized output, multiple
-formatters, and transports which allow you to decide
-where the logs go.
+Strange is a logger which provides a maximum amount of configuration options, with minimal setup. It supports setting the log level via an environment variable (wip), colorized output, multiple formatters, and transports which allow you to decide where the logs go.
 
 ## Installation
 
@@ -41,9 +37,9 @@ require "strange/transport/file_transport"
 logger = Strange.new(level: Strange::DEBUG, transports: [
   Strange::ConsoleTransport.new,    # Level will default to `Strange::DEBUG`
   Strange::FileTransport.new(
-    file: "/var/log/strange-test.log",
+    file: File.expand_path("~/Desktop/test.log", __DIR__),
     level: Strange::ERROR,
-    formatter: Strange::Formatter::JSONFormatter.new(
+    formatter: Strange::JSONFormatter.new(
       indent: true
     )
   )
@@ -51,7 +47,7 @@ logger = Strange.new(level: Strange::DEBUG, transports: [
 
 # This will be logged to the console appended to the
 # file /var/log/strange-test.log as JSON.
-logger.debug("If I am the chief of sinners, I am the chief of sufferers also.")
+logger.crit("If I am the chief of sinners, I am the chief of sufferers also.")
 ```
 
 ## Level
@@ -73,25 +69,20 @@ with each having a corresponding method of the same name.
 
 ## Transports
 
-Strange uses transports as a means of sending your message where it belongs. Included by
-default are `Strange::ConsoleTransport`, which is the default transport,
-and `Strange::FileTransport` which can be used for logging to a file.
-Transports are also simple to create. All you have to do is extend the
-`Strange::Transport` class and define a `#log` method.
+Strange uses transports as a means of sending your message where it belongs. Included by default are `Strange::ConsoleTransport`, which is the default transport, and `Strange::FileTransport` which can be used for logging to a file. Transports are also simple to create. All you have to do is extend the `Strange::Transport` class and define a `#log` method.
 
-All transports have to define a log method, which is called
-every time `Logger#log` is called.
+All transports have to define a log method, which is called every time `Logger#log` is called.
 
 ```crystal
 class MySimpleTransport < Strange::Transport
   def log(message, level)
+    return unless level <= @level
     puts message
   end
 end
 ```
 
-You can register your logger in the `Strange` constructor or
-by pushing it to `Strange#transports`.
+You can register your logger in the `Strange` constructor or by pushing it to `Strange#transports`.
 
 ```
 logger.transports << MySimpleTransport.new
@@ -99,11 +90,7 @@ logger.transports << MySimpleTransport.new
 
 ## Formatters
 
-Formatters define how logs are formatted and are included on a per-transport basis.
-Included by default are the `ColoredFormatter`, `BasicFormatter`, and
-`JSONFormatter`, but you can pretty easily create a formatter for
-whatever you want by simply extending `Strange::Formatter` and
-providing a `#format` method.
+Formatters define how logs are formatted and are included on a per-transport basis. Included by default are the `ColoredFormatter`, `BasicFormatter`, and `JSONFormatter`, but you can pretty easily create a formatter for whatever you want by simply extending `Strange::Formatter` and providing a `#format` method.
 
 ```crystal
 class MyFormatter < Strange::Formatter
@@ -112,6 +99,10 @@ class MyFormatter < Strange::Formatter
   end
 end
 ```
+
+## Notes
+
+> All transports and formatters besides `Strange::ConsoleTransport` and `Strange::BasicFormatter`  have to be require explicitly.
 
 ## Contributing
 
