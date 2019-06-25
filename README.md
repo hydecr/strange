@@ -84,7 +84,7 @@ end
 
 You can register your logger in the `Strange` constructor or by pushing it to `Strange#transports`.
 
-```
+```crystal
 logger.transports << MySimpleTransport.new
 ```
 
