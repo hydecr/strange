@@ -5,8 +5,8 @@ class Strange
   class ConsoleTransport < Transport
 
     def log(message, level)
-      return unless level <= @level
       sync do
+        next unless level <= @level
         message = @formatter.format(message, level)
 
         if level <= Strange::ERROR
